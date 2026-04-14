@@ -1,0 +1,191 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8"/>
+<title>Сотрудник — Прогрессивная цепочка</title>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<style>
+  body{font-family:Arial,Helvetica,sans-serif;background:#f3f7fb;color:#0b2947;margin:0;padding:20px}
+  .card{max-width:900px;margin:40px auto;background:#fff;padding:22px;border-radius:12px;box-shadow:0 8px 30px rgba(10,20,40,0.06)}
+  button{padding:8px 12px;border-radius:8px;border:0;background:#0b66c3;color:#fff;cursor:pointer}
+  .muted{color:#6b7a90}
+  .day{padding:8px;border-bottom:1px solid #f0f6ff}
+  #loginHistory div{padding:6px 0;border-bottom:1px solid #f0f6ff}
+  .top-row{display:flex;justify-content:space-between;align-items:center}
+  .small-btn{background:#efefef;color:#0b2947;padding:8px 10px;border-radius:6px;border:0;cursor:pointer}
+  /* modal */
+  #instrModal{display:none;position:fixed;left:0;top:0;width:100%;height:100%;background:rgba(0,0,0,0.45);align-items:center;justify-content:center;z-index:9999}
+  #instrModal .box{background:#fff;padding:20px;border-radius:10px;max-width:900px;max-height:80vh;overflow:auto;box-shadow:0 8px 30px rgba(10,20,40,0.12)}
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="top-row">
+    <div>
+      <h2 style="margin:0">Интерфейс сотрудника</h2>
+      <div id="greeting" style="margin-top:6px;color:#0b2947;font-weight:600"></div>
+    </div>
+    <div style="text-align:right">
+      <button id="weoiBtn" style="display:block;margin-bottom:8px">Войти</button>
+      <button id="backBtn" class="small-btn">На главную (index)</button>
+    </div>
+  </div>
+
+  <p class="muted">План бонусов по дням (Прогрессивная цепочка эффективности)</p>
+  <div class="day"><strong>День 1:</strong> 0 руб (базовый рабочий день)</div>
+  <div class="day"><strong>День 2:</strong> 50 руб → условие: 100% плана</div>
+  <div class="day"><strong>День 3:</strong> 0 руб → условие: 120% плана</div>
+  <div class="day"><strong>День 4:</strong> 200 руб → условие: 100% плана</div>
+  <div class="day"><strong>День 5:</strong> 0 руб → условие: 150% плана</div>
+  <div class="day"><strong>День 6:</strong> 500 руб → условие: 100% плана</div>
+  <div class="day"><strong>День 7:</strong> 0 руб → условие: 200% плана</div>
+  <div class="day"><strong>День 8:</strong> 1500 руб → условие: 100% плана (подробнее уточняйте у начальника)</div>
+
+  <hr style="margin-top:18px;border-color:#f0f6ff"/>
+  <h3>История входов</h3>
+  <div id="loginHistory" style="background:#fafcff;padding:10px;border-radius:8px;border:1px solid #f0f6ff;max-height:220px;overflow:auto"></div>
+
+  <div style="margin-top:8px">
+    <button id="clearHistoryBtn" class="small-btn">Очистить историю этого пользователя</button>
+    <button id="showInstrBtn" style="margin-left:8px">📘 Инструкция / Цепочка Результатов</button>
+  </div>
+</div>
+
+<!-- Instruction modal -->
+<div id="instrModal" role="dialog" aria-modal="true">
+  <div class="box">
+    <div style="display:flex;justify-content:space-between;align-items:center">
+      <h3 style="margin:0;color:#0b2947">Инструкция — Цепочка Результатов</h3>
+      <button id="instrClose" class="small-btn">Закрыть</button>
+    </div>
+    <div id="instrContent" style="margin-top:12px;color:#0b2947;line-height:1.45"></div>
+  </div>
+</div>
+
+<script>
+/* Self-contained, robust script */
+document.addEventListener('DOMContentLoaded', function(){
+  function qs(name){ try{ return (new URL(window.location.href)).searchParams.get(name); }catch(e){ return null; } }
+  const uid = qs('uid') || '';
+  const names = {"0040123":"Владимир","000123":"Какаду","012636":"Святослав","20028":"Тимофей"};
+  const name = names[uid] || '';
+
+  // Greeting with local date/time
+  const greetEl = document.getElementById('greeting');
+  function updateGreeting(){
+    const now = new Date();
+    const dateStr = now.toLocaleDateString();
+    const timeStr = now.toLocaleTimeString();
+    if(name) greetEl.textContent = 'Здравствуйте, ' + name + '! Сегодня ' + dateStr + ', текущее время: ' + timeStr;
+    else greetEl.textContent = 'Здравствуйте! Сегодня ' + dateStr + ', текущее время: ' + timeStr;
+  }
+  updateGreeting();
+  setInterval(updateGreeting, 60000);
+
+  // Buttons
+  const weoiBtn = document.getElementById('weoiBtn');
+  if(weoiBtn){
+    weoiBtn.textContent = name ? ('Войти как ' + name) : 'Войти на Weoi';
+    weoiBtn.addEventListener('click', function(){
+      // pass uid to Weoi.html if available
+      if(uid) location.href = 'Weoi.html?uid=' + encodeURIComponent(uid);
+      else location.href = 'Weoi.html';
+    });
+  }
+  const backBtn = document.getElementById('backBtn');
+  backBtn.addEventListener('click', function(){ location.href = 'index.html'; });
+
+  // History (per-user) stored in localStorage key: weoi_login_history_<uid>
+  const histEl = document.getElementById('loginHistory');
+  function renderHistory(){
+    histEl.innerHTML = '';
+    if(!uid){ histEl.textContent = 'UID не указан. Откройте страницу с параметром ?uid=0040123'; return; }
+    const key = 'weoi_login_history_' + uid;
+    let arr = [];
+    try{ arr = JSON.parse(localStorage.getItem(key) || '[]'); } catch(e){ arr = []; }
+    if(!arr.length){ histEl.textContent = 'История входов пуста.'; return; }
+    arr.slice().reverse().forEach(function(item){
+      const d = new Date(item.ts);
+      const el = document.createElement('div');
+      el.textContent = '[' + d.toLocaleString() + '] — вход успешен (' + (item.name || name || 'сотрудник') + ')';
+      histEl.appendChild(el);
+    });
+  }
+  renderHistory();
+
+  document.getElementById('clearHistoryBtn').addEventListener('click', function(){
+    if(!uid) return alert('UID не указан');
+    if(!confirm('Очистить историю входов для этого пользователя?')) return;
+    localStorage.removeItem('weoi_login_history_' + uid);
+    renderHistory();
+  });
+
+  // Instruction modal logic
+  const instrModal = document.getElementById('instrModal');
+  const instrContent = document.getElementById('instrContent');
+  document.getElementById('showInstrBtn').addEventListener('click', function(){
+    instrModal.style.display = 'flex';
+    instrModal.scrollTop = 0;
+  });
+  document.getElementById('instrClose').addEventListener('click', function(){
+    instrModal.style.display = 'none';
+  });
+  instrModal.addEventListener('click', function(e){ if(e.target === instrModal) instrModal.style.display='none'; });
+
+  // inject the long instruction text (as requested)
+  instrContent.innerHTML = `
+<h2>Тема: Запускаем «Цепочку Результатов» — твой ежедневный рост и доход!</h2>
+<p>Команда! У нас для вас крутейшие новости 🚀</p>
+<p>Мы запускаем новую систему мотивации, где ваша ежедневная работа превращается в увлекательный челлендж с реальными денежными бонусами. Это не просто премии — это ваша персональная «цепочка успеха»!</p>
+<h3>💰 Как это работает — просто и выгодно:</h3>
+<p>Представьте, что каждый ваш рабочий день — это новый уровень в игре. Чем дольше играете, тем выше награды!</p>
+<p><strong>Ваша цепочка роста выглядит так:</strong></p>
+<table style="width:100%;border-collapse:collapse">
+<thead><tr><th style="text-align:left;padding:6px;border-bottom:1px solid #eee">День</th><th style="text-align:left;padding:6px;border-bottom:1px solid #eee">Ваш бонус</th><th style="text-align:left;padding:6px;border-bottom:1px solid #eee">Что нужно сделать</th></tr></thead>
+<tbody>
+<tr><td style="padding:6px;border-bottom:1px solid #f7f9fc">1</td><td style="padding:6px;border-bottom:1px solid #f7f9fc">🆓 Старт</td><td style="padding:6px;border-bottom:1px solid #f7f9fc">Выполнить 100% плана</td></tr>
+<tr><td style="padding:6px;border-bottom:1px solid #f7f9fc">2</td><td style="padding:6px;border-bottom:1px solid #f7f9fc">✅ +50 руб</td><td style="padding:6px;border-bottom:1px solid #f7f9fc">Выполнить 100% плана</td></tr>
+<tr><td style="padding:6px;border-bottom:1px solid #f7f9fc">3</td><td style="padding:6px;border-bottom:1px solid #f7f9fc">🚀 Супер-день!</td><td style="padding:6px;border-bottom:1px solid #f7f9fc">Показать 120% от плана</td></tr>
+<tr><td style="padding:6px;border-bottom:1px solid #f7f9fc">4</td><td style="padding:6px;border-bottom:1px solid #f7f9fc">✅ +200 руб</td><td style="padding:6px;border-bottom:1px solid #f7f9fc">Выполнить 100% плана</td></tr>
+<tr><td style="padding:6px;border-bottom:1px solid #f7f9fc">5</td><td style="padding:6px;border-bottom:1px solid #f7f9fc">🚀 Мега-день!</td><td style="padding:6px;border-bottom:1px solid #f7f9fc">Показать 150% от плана</td></tr>
+<tr><td style="padding:6px;border-bottom:1px solid #f7f9fc">6</td><td style="padding:6px;border-bottom:1px solid #f7f9fc">✅ +500 руб</td><td style="padding:6px;border-bottom:1px solid #f7f9fc">Выполнить 100% плана</td></tr>
+<tr><td style="padding:6px;border-bottom:1px solid #f7f9fc">7</td><td style="padding:6px;border-bottom:1px solid #f7f9fc">🚀 Рекордный день!</td><td style="padding:6px;border-bottom:1px solid #f7f9fc">Показать 200% от плана</td></tr>
+<tr><td style="padding:6px">8</td><td style="padding:6px">🏆 +1500 руб!</td><td style="padding:6px">Выполнить 100% плана</td></tr>
+</tbody>
+</table>
+<h3>🎯 Почему это КРУТО для вас:</h3>
+<ul>
+<li>✨ <strong>Вы контролируете свой доход</strong> — Видите наперед, сколько заработаете завтра; Планируете свои финансовые цели; Максимальная прозрачность — никаких секретов</li>
+<li>🚀 <strong>Растите профессионально</strong> — В дни "супер-усилий" вы открываете в себе новые способности; Учитесь работать эффективнее и умнее; Становитесь ценнее на рынке труда</li>
+<li>🏆 <strong>Получаете признание</strong> — Ваш прогресс видят все; Вы становитесь примером для коллег; Компания ценит ваши сверхусилия</li>
+</ul>
+<h3>📱 Как это будет выглядеть на практике:</h3>
+<pre style="background:#f7fbff;padding:10px;border-radius:6px">Твоя цепочка: ✅ ✅ 🚀 ✅ 🚀 ✅ 🚀 💎
+Текущий день: 7
+Завтрашний бонус: 1500 руб!
+Твоя производительность: +85% за неделю</pre>
+<p>Вы будете получать уведомления:</p>
+<ul>
+<li>«Завтра день рекордов! Готовься к двойному плану!»</li>
+<li>«Остался 1 день до бонуса 500 руб!»</li>
+<li>«Поздравляем! Ты прошел 8-дневную цепочку!»</li>
+</ul>
+<h3>💡 Частые вопросы:</h3>
+<p><strong>Что если я заболею?</strong><br>Больничный с официальным листком не сбрасывает цепочку! Вы просто продолжите с того же дня после выхода.</p>
+<p><strong>Сложно ли выполнить 200% плана?</strong><br>Мы специально делаем такие дни редкими (всего 3 из 8 дней). И поверьте — когда вы разгонитесь в цепочке, 200% будут абсолютно достижимы!</p>
+<p><strong>Когда платят бонусы?</strong><br>Все накопленные бонусы вы получаете вместе с очередной зарплатой.</p>
+<h3>🎁 Что вы получаете в итоге:</h3>
+<ul>
+<li>Дополнительный доход — до 2250 руб за 8-дневную цепочку</li>
+<li>Прокачанные навыки — учитесь бить рекорды</li>
+<li>Признание — становитесь звездой команды</li>
+<li>Азарт — работа превращается в увлекательную игру</li>
+</ul>
+<p>Команда Cocos, готовы покорять новые высоты? 🚀</p>
+<p>С уважением,<br>Белый Какаду<br>Основатель Cocos</p>
+`;
+
+}); // DOMContentLoaded
+</script>
+</body>
+</html>

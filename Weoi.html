@@ -1,0 +1,441 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8"/>
+<title>Weoi — Система проверок и мотивации</title>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<style>
+  body{font-family:Arial,Helvetica,sans-serif;background:#f3f7fb;color:#0b2947;margin:0;padding:20px}
+  .card{max-width:1100px;margin:12px auto;background:#fff;padding:18px;border-radius:12px;box-shadow:0 8px 30px rgba(10,20,40,0.06)}
+  input,button{font-size:14px}
+  input{padding:8px;border-radius:8px;border:1px solid #e6f0ff;width:100%;box-sizing:border-box}
+  button{padding:10px 12px;border-radius:8px;border:0;background:#0b66c3;color:#fff;cursor:pointer}
+  button.ghost{background:#efefef;color:#0b2947}
+  .row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+  .muted{color:#6b7a90} .error{color:#b33} .success{color:#0a8f3a}
+  table{width:100%;border-collapse:collapse;margin-top:12px} th,td{padding:8px;border-bottom:1px solid #f0f6ff}
+  .small{font-size:13px;color:#666}
+  .tab-button{background:#efefef;color:#0b2947;border-radius:6px;padding:6px 10px;cursor:pointer}
+  .tab-button.active{background:#0b66c3;color:#fff}
+</style>
+</head>
+<body>
+<div class="card">
+  <h2>Weoi — проверка кодов и "Прогрессивная цепочка эффективности"</h2>
+  <p class="muted">Локальная демонстрация — всё выполняется в браузере. Откройте файл локально (file://).</p>
+
+  <div style="margin-top:10px">
+    <label>ID сотрудника: <input id="idInput" placeholder="ID"/></label>
+    <label style="margin-top:8px">Код подтверждения личности: <input id="auth" type="password" placeholder="код подтверждения"/></label>
+    <div style="margin-top:8px" class="row">
+      <button id="loginBtn">Войти</button>
+      <button id="logoutBtn" class="ghost" style="display:none">Выйти</button>
+      <button id="showTableBtn" class="ghost">Таблица сотрудников</button>
+      <span id="loginMsg" class="error" style="display:none"></span>
+    </div>
+  </div>
+
+  <div id="control" style="display:none;margin-top:12px">
+    <h3 id="employeeName" style="margin-top:0"></h3>
+    <div id="chainStatus" style="font-weight:bold;margin-bottom:8px">Цепочка: 0/8, Всего бонусов: 0 ₽</div>
+
+    <h3>Применить одноразовый код</h3>
+    <div class="row">
+      <input id="codeInput" style="flex:1" placeholder="Например P100001-abcdef0123456789abcdef0123456789"/>
+      <button id="applyBtn">Применить код</button>
+    </div>
+    <div id="codeMsg" style="margin-top:8px"></div>
+
+    <h3 style="margin-top:14px">История (последние записи)</h3>
+    <table><thead><tr><th>Дата</th><th>Тип</th><th>%</th><th>Примечание</th><th>День в цепочке</th><th>Бонус</th></tr></thead><tbody id="hist"></tbody></table>
+    <div style="margin-top:8px">Использовано кодов: <span id="usedCount">0</span></div>
+
+    <div style="margin-top:12px" class="row">
+      <button id="calcBtn">Посчитать бонусы</button>
+      <button id="clearHistory" class="ghost">Сбросить историю (local)</button>
+      <div id="calcResult" style="margin-left:8px;font-weight:bold"></div>
+    </div>
+
+    <p class="small" style="margin-top:12px">Примечание: Z-коды — сбрасывают цепочку; B-коды — больничные (уважительная причина).</p>
+  </div>
+</div>
+
+<!-- Модальное окно с таблицей сотрудников -->
+<div id="tableModal" style="display:none;position:fixed;left:0;top:0;width:100%;height:100%;background:rgba(0,0,0,0.7);align-items:center;justify-content:center;z-index:9999">
+  <div style="background:#fff;padding:24px;border-radius:12px;max-width:800px;max-height:80vh;overflow:auto;box-shadow:0 10px 40px rgba(0,0,0,0.3)">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+      <h3 style="margin:0;color:#0b2947">Таблица сотрудников Cocos</h3>
+      <button id="closeTableBtn" class="ghost" style="padding:6px 10px">Закрыть</button>
+    </div>
+    
+    <table style="width:100%;border-collapse:collapse;margin-top:12px">
+      <thead>
+        <tr style="background:#f0f6ff">
+          <th style="padding:10px;border:1px solid #e0e7ff;text-align:left">ID</th>
+          <th style="padding:10px;border:1px solid #e0e7ff;text-align:left">Имя</th>
+          <th style="padding:10px;border:1px solid #e0e7ff;text-align:left">Код подтверждения</th>
+          <th style="padding:10px;border:1px solid #e0e7ff;text-align:left">Роль/Отдел</th>
+          <th style="padding:10px;border:1px solid #e0e7ff;text-align:left">Статус доступа</th>
+        </tr>
+      </thead>
+      <tbody id="employeesTableBody"></tbody>
+    </table>
+    
+    <div style="margin-top:16px;padding:12px;background:#f9f9f9;border-radius:8px">
+      <h4 style="margin:0 0 8px 0;color:#0b2947">Статистика:</h4>
+      <p style="margin:4px 0">Всего сотрудников: <span id="totalEmployees">0</span></p>
+      <p style="margin:4px 0">С доступом к Weoi: <span id="activeEmployees">0</span></p>
+      <p style="margin:4px 0">Демо-пользователи: <span id="demoEmployees">0</span></p>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ====== CONFIG (жёстко в файле) ====== */
+// База данных сотрудников
+const EMPLOYEES = {
+  '0040123': {
+    name: 'Владимир Поносов',
+    auth: '58754564568',
+    role: 'Разработчик',
+    department: 'Технический отдел',
+    status: 'Активен',
+    hasAccess: true
+  },
+  '000123': {
+    name: 'Какаду',
+    auth: '587568',
+    role: 'Основатель',
+    department: 'Руководство',
+    status: 'Активен',
+    hasAccess: true
+  },
+  '012636': {
+    name: 'Святослав',
+    auth: '746327890',
+    role: 'Менеджер проектов',
+    department: 'Операционный отдел',
+    status: 'Активен',
+    hasAccess: true
+  },
+  '20028': {
+    name: 'Тимофей',
+    auth: '7453034432',
+    role: 'Аналитик',
+    department: 'Аналитический отдел',
+    status: 'Активен',
+    hasAccess: true
+  }
+};
+
+const SECRET = 'Ad1AoGvgoX3Cq1K5UrVXdjd3QI67lMpp6OjsAj66knbbKTb1I3l2qQ';
+const ITERATIONS = 1200;
+
+/* ====== Storage keys ====== */
+const KEY_USED = 'weoi_used_large_v2';
+const KEY_HIST = 'weoi_hist_large_v2';
+const CHAIN_KEY = 'weoi_chain_state_v1';
+
+/* ====== Chain rules: 8-day cycle ====== */
+const CHAIN_RULES = [
+  {req:100, bonus:0},   // Day1
+  {req:100, bonus:50},  // Day2
+  {req:120, bonus:0},   // Day3 super
+  {req:100, bonus:200}, // Day4
+  {req:150, bonus:0},   // Day5 super
+  {req:100, bonus:500}, // Day6
+  {req:200, bonus:0},   // Day7 super
+  {req:100, bonus:1500} // Day8
+];
+
+/* ====== Helpers for localStorage ====== */
+function loadUsed(){ try{ return JSON.parse(localStorage.getItem(KEY_USED)||'{}') }catch(e){return {}} }
+function saveUsed(u){ try{ localStorage.setItem(KEY_USED, JSON.stringify(u)) }catch(e){} }
+function loadHist(){ try{ return JSON.parse(localStorage.getItem(KEY_HIST)||'[]') }catch(e){return []} }
+function saveHist(h){ try{ localStorage.setItem(KEY_HIST, JSON.stringify(h)) }catch(e){} }
+function loadChainState(){ try{ return JSON.parse(localStorage.getItem(CHAIN_KEY)||'{}') }catch(e){return {} } }
+function saveChainState(s){ try{ localStorage.setItem(CHAIN_KEY, JSON.stringify(s)) }catch(e){} }
+
+/* ====== WebCrypto HMAC helpers (for code verification) ====== */
+async function importHmacKey(secretStr){
+  const enc = new TextEncoder();
+  return await crypto.subtle.importKey('raw', enc.encode(secretStr), {name:'HMAC', hash:'SHA-256'}, false, ['sign']);
+}
+async function hmacOnce(key, data){
+  return await crypto.subtle.sign('HMAC', key, data);
+}
+function hexFromBuf(buf){ return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join(''); }
+async function iterativeHmacHex(secretKey, message, rounds){
+  const enc = new TextEncoder();
+  let input = enc.encode(message);
+  let out = await hmacOnce(secretKey, input);
+  for(let i=1;i<rounds;i++){ out = await hmacOnce(secretKey, out); }
+  return hexFromBuf(out);
+}
+
+/* ====== DOM refs ====== */
+const loginBtn = document.getElementById('loginBtn');
+const logoutBtn = document.getElementById('logoutBtn');
+const showTableBtn = document.getElementById('showTableBtn');
+const idInput = document.getElementById('idInput');
+const authInput = document.getElementById('auth');
+const loginMsg = document.getElementById('loginMsg');
+const control = document.getElementById('control');
+const applyBtn = document.getElementById('applyBtn');
+const codeInput = document.getElementById('codeInput');
+const codeMsg = document.getElementById('codeMsg');
+const histTbody = document.getElementById('hist');
+const usedCountEl = document.getElementById('usedCount');
+const chainStatusEl = document.getElementById('chainStatus');
+const calcBtn = document.getElementById('calcBtn');
+const calcResult = document.getElementById('calcResult');
+const clearHistoryBtn = document.getElementById('clearHistory');
+const tableModal = document.getElementById('tableModal');
+const closeTableBtn = document.getElementById('closeTableBtn');
+const employeesTableBody = document.getElementById('employeesTableBody');
+const totalEmployeesEl = document.getElementById('totalEmployees');
+const activeEmployeesEl = document.getElementById('activeEmployees');
+const demoEmployeesEl = document.getElementById('demoEmployees');
+
+let currentEmployee = null;
+
+/* ====== Функция отображения таблицы сотрудников ====== */
+function showEmployeesTable() {
+  employeesTableBody.innerHTML = '';
+  let total = 0;
+  let active = 0;
+  
+  for (const [id, emp] of Object.entries(EMPLOYEES)) {
+    total++;
+    if (emp.hasAccess) active++;
+    
+    const row = document.createElement('tr');
+    row.style.borderBottom = '1px solid #f0f0f0';
+    
+    const statusColor = emp.status === 'Активен' ? '#0a8f3a' : 
+                       emp.status === 'Неактивен' ? '#b33' : '#666';
+    
+    row.innerHTML = `
+      <td style="padding:10px;border:1px solid #e0e7ff"><strong>${id}</strong></td>
+      <td style="padding:10px;border:1px solid #e0e7ff">${emp.name}</td>
+      <td style="padding:10px;border:1px solid #e0e7ff;font-family:monospace">${emp.auth}</td>
+      <td style="padding:10px;border:1px solid #e0e7ff">${emp.role}<br><small>${emp.department}</small></td>
+      <td style="padding:10px;border:1px solid #e0e7ff">
+        <span style="color:${statusColor};font-weight:bold">${emp.status}</span><br>
+        <small>${emp.hasAccess ? '✅ Доступ к Weoi' : '❌ Без доступа'}</small>
+      </td>
+    `;
+    
+    employeesTableBody.appendChild(row);
+  }
+  
+  totalEmployeesEl.textContent = total;
+  activeEmployeesEl.textContent = active;
+  demoEmployeesEl.textContent = total - active;
+  
+  tableModal.style.display = 'flex';
+}
+
+/* ====== Login / Logout ====== */
+loginBtn.addEventListener('click', () => {
+  const id = idInput.value.trim();
+  const code = authInput.value.trim();
+  
+  if (!EMPLOYEES[id]) {
+    loginMsg.style.display = 'inline';
+    loginMsg.textContent = 'Неверный ID сотрудника';
+    return;
+  }
+  
+  if (EMPLOYEES[id].auth !== code) {
+    loginMsg.style.display = 'inline';
+    loginMsg.textContent = 'Неверный код подтверждения';
+    return;
+  }
+  
+  currentEmployee = EMPLOYEES[id];
+  
+  loginMsg.style.display = 'none';
+  control.style.display = 'block';
+  loginBtn.style.display = 'none';
+  logoutBtn.style.display = 'inline-block';
+  document.getElementById('employeeName').textContent = currentEmployee.name;
+  renderHist();
+  updateChainStatus();
+});
+
+logoutBtn.addEventListener('click', () => {
+  currentEmployee = null;
+  control.style.display = 'none';
+  loginBtn.style.display = 'inline-block';
+  logoutBtn.style.display = 'none';
+  idInput.value = '';
+  authInput.value = '';
+  document.getElementById('employeeName').textContent = '';
+});
+
+showTableBtn.addEventListener('click', showEmployeesTable);
+closeTableBtn.addEventListener('click', () => {
+  tableModal.style.display = 'none';
+});
+
+/* ====== Apply code logic (validation + chain update) ====== */
+applyBtn.addEventListener('click', async () => {
+  if (!currentEmployee) {
+    codeMsg.textContent = 'Сначала войдите в систему';
+    codeMsg.className = 'error';
+    return;
+  }
+  
+  const codeStr = (codeInput.value || '').trim();
+  codeMsg.textContent = ''; codeMsg.className = '';
+  if(!codeStr){ codeMsg.textContent='Введите код'; codeMsg.className='error'; return; }
+  const used = loadUsed();
+  if(used[codeStr]){ codeMsg.textContent='Код уже использован'; codeMsg.className='error'; return; }
+  const m = codeStr.match(/^([A-Z0-9]+)-([0-9a-fA-F]{32})$/);
+  if(!m){ codeMsg.textContent='Неверный формат кода'; codeMsg.className='error'; return; }
+  const left = m[1], sig = m[2];
+  // Verify with HMAC iterative
+  try{
+    const key = await importHmacKey(SECRET);
+    const hex = await iterativeHmacHex(key, Object.keys(EMPLOYEES).find(k => EMPLOYEES[k] === currentEmployee) + left, ITERATIONS);
+    const expect = hex.substring(0,32);
+    if(expect.toLowerCase() !== sig.toLowerCase()){
+      codeMsg.textContent='Код недействителен'; codeMsg.className='error'; return;
+    }
+  }catch(e){
+    console.error('crypto error', e);
+    codeMsg.textContent='Ошибка проверки'; codeMsg.className='error'; return;
+  }
+
+  // Accept code: mark used
+  used[codeStr] = { at: new Date().toISOString() };
+  saveUsed(used);
+
+  // Prepare history entry date (next day after last record or today if none)
+  const hist = loadHist();
+  const lastDate = hist.length ? new Date(hist[hist.length-1].date) : new Date();
+  const next = new Date(lastDate); next.setDate(next.getDate()+1);
+  const iso = next.toISOString().slice(0,10);
+
+  let typ='unknown', percent=0, note='';
+  if(left.startsWith('P')){ typ='percent'; percent = parseInt(left.substring(1,4)) || 100; note = percent + '% день'; }
+  else if(left.startsWith('B')){ typ='sick'; percent = 0; note = 'больничный (excused)'; }
+  else if(left.startsWith('Z')){ typ='zero-reset'; percent = 0; note = 'нулевой — сброс цепочки'; }
+
+  // Chain handling
+  const chain = loadChainState();
+  if(!Number.isInteger(chain.count)) chain.count = 0;
+  if(!Number.isFinite(chain.totalBonus)) chain.totalBonus = 0;
+
+  const entry = { date: iso, type: typ, percent: percent, code: codeStr, note: note, employee: currentEmployee.name };
+
+  if(typ === 'zero-reset'){
+    chain.count = 0;
+    entry.note = note;
+    hist.push(entry);
+    hist.push({ date: iso, type: 'reset', percent: 0, code: codeStr, note: 'Цепочка сброшена', employee: currentEmployee.name });
+  } else if(typ === 'sick'){
+    // excused day: do not increment chain, but record it
+    entry.note = note + ' (уважительная причина)';
+    hist.push(entry);
+  } else if(typ === 'percent'){
+    const expectedIndex = (chain.count % 8); // 0-based index for next rule
+    const rule = CHAIN_RULES[expectedIndex];
+    if(!rule){
+      // fallback: if rule missing, just treat as normal percent day
+      hist.push(entry);
+    } else {
+      if(percent >= rule.req){
+        // success
+        if(rule.bonus > 0){
+          entry.bonus = rule.bonus;
+          chain.totalBonus = (chain.totalBonus || 0) + rule.bonus;
+          entry.note = entry.note + ' — Бонус начислен: ' + rule.bonus + ' ₽';
+        } else {
+          entry.note = entry.note + ' — Супердень пройден (без выплаты)';
+        }
+        chain.count = (chain.count || 0) + 1;
+        entry.chainDay = chain.count;
+        hist.push(entry);
+        if(chain.count >= 8){
+          hist.push({ date: iso, type: 'cycle_complete', percent: 0, code: codeStr, note: 'Цикл из 8 дней завершён', employee: currentEmployee.name });
+          chain.count = 0;
+        }
+      } else {
+        // failed requirement -> broken
+        hist.push(entry);
+        hist.push({ date: iso, type: 'broken', percent: percent, code: codeStr, note: 'Требование не выполнено — цепочка сброшена', employee: currentEmployee.name });
+        chain.count = 0;
+      }
+    }
+  } else {
+    hist.push(entry);
+  }
+
+  saveHist(hist);
+  saveChainState(chain);
+  codeMsg.textContent = 'Код принят — запись добавлена';
+  codeMsg.className = 'success';
+  codeInput.value = '';
+  renderHist();
+  updateChainStatus();
+});
+
+/* ====== Render history ====== */
+function renderHist(){
+  const hist = loadHist();
+  histTbody.innerHTML = '';
+  // Показываем только записи текущего сотрудника
+  const filteredHist = hist.filter(h => !currentEmployee || h.employee === currentEmployee.name);
+  filteredHist.slice().reverse().forEach(h => {
+    const tr = document.createElement('tr');
+    const bonusText = h.bonus ? (h.bonus + ' ₽') : '';
+    const chainText = h.chainDay ? ('#' + h.chainDay) : '';
+    tr.innerHTML = `<td>${h.date}</td><td>${h.type}</td><td>${h.percent}%</td><td>${h.note||''}</td><td>${chainText}</td><td>${bonusText}</td>`;
+    histTbody.appendChild(tr);
+  });
+  usedCountEl.textContent = Object.keys(loadUsed()).length;
+}
+
+/* ====== Chain status UI ====== */
+function updateChainStatus(){
+  const st = loadChainState();
+  const count = st && Number.isFinite(st.count) ? st.count : 0;
+  const totalBonus = st && Number.isFinite(st.totalBonus) ? st.totalBonus : 0;
+  chainStatusEl.textContent = 'Цепочка: ' + count + '/8, Всего бонусов: ' + totalBonus + ' ₽';
+}
+
+/* ====== Calculator ====== */
+calcBtn.addEventListener('click', () => {
+  const hist = loadHist();
+  // Фильтруем по текущему сотруднику
+  const filteredHist = hist.filter(h => !currentEmployee || h.employee === currentEmployee.name);
+  let total = 0, bonusDays = 0, superDays = 0, cycles = 0;
+  filteredHist.forEach(h => {
+    if(h.type === 'cycle_complete') cycles += 1;
+    if(h.bonus) { total += Number(h.bonus || 0); bonusDays += 1; }
+    if(h.type === 'percent' && (!h.bonus || Number(h.bonus)===0) && Number(h.percent) > 100) superDays += 1;
+  });
+  calcResult.textContent = `Всего бонусов: ${total} ₽ | Бонусных дней: ${bonusDays} | Супер-дней: ${superDays} | Завершённых циклов: ${cycles}`;
+});
+
+/* ====== Clear history (local only) ====== */
+clearHistoryBtn.addEventListener('click', () => {
+  if(!confirm('Удалить историю и использованные коды в этом браузере?')) return;
+  localStorage.removeItem(KEY_HIST);
+  localStorage.removeItem(KEY_USED);
+  localStorage.removeItem(CHAIN_KEY);
+  renderHist();
+  updateChainStatus();
+  alert('Локальная история удалена.');
+});
+
+/* ====== Init on load ====== */
+(function init(){
+  renderHist();
+  updateChainStatus();
+})();
+</script>
+</body>
+</html>
