@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Дополнительный контент - Cocos Gaming</title>
+  <style>
+    body { background: #111; color: #FFD700; font-family: Arial, sans-serif; text-align: center; }
+    h1 { margin-top: 30px; }
+    .container { margin: 40px auto; width: 80%; max-width: 900px; }
+    .card { background: #222; border: 2px solid #FFD700; border-radius: 12px; padding: 20px; margin: 20px 0; }
+    input { padding: 10px; margin: 5px; border-radius: 8px; border: 1px solid #FFD700; background: #333; color: #FFD700; }
+    button { background: #FFD700; color: #111; padding: 10px 20px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; }
+    button:hover { background: #e6c200; }
+  </style>
+</head>
+<body>
+  <h1>Дополнительный контент</h1>
+  <div class="container">
+    <div class="card">
+      <h2>CS2</h2>
+      <p>Эксклюзивный контент Counter-Strike 2</p>
+      <iframe src="https://www.hltv.org/matches" width="100%" height="300"></iframe>
+    </div>
+    <div class="card">
+      <h2>Загадки</h2>
+      <p>Введите 5 чисел, чтобы получить секретный код:</p>
+      <input id="num1" placeholder="Число 1">
+      <input id="num2" placeholder="Число 2">
+      <input id="num3" placeholder="Число 3">
+      <input id="num4" placeholder="Число 4">
+      <input id="num5" placeholder="Число 5">
+      <br><button onclick="checkCode()">Проверить</button>
+      <p id="result"></p>
+    </div>
+  </div>
+
+  <script>
+    function checkCode() {
+      const correct = ["454343", "43786438", "454545", "45584", "7832783232783278"];
+      const inputs = [document.getElementById('num1').value, document.getElementById('num2').value, 
+                      document.getElementById('num3').value, document.getElementById('num4').value, 
+                      document.getElementById('num5').value];
+      if (JSON.stringify(inputs) === JSON.stringify(correct)) {
+        alert("Секретный код: 7432972239");
+        window.location.href = "secret.html";
+      } else {
+        document.getElementById('result').innerHTML = "Неправильные числа!";
+      }
+    }
+  </script>
+
+<script>
+  const hiddenNumbers = ['454343', '43786438', '454545', '45584', '7832783232783278'];
+
+  function showHintNumber() {
+    const num = hiddenNumbers[Math.floor(Math.random() * hiddenNumbers.length)];
+    alert("Подсказка: " + num);
+  }
+
+  // Вешаем обработчик на логотип (и текст и картинку)
+  window.addEventListener('DOMContentLoaded', () => {
+    const logo = document.querySelector('img, .logo, h1, .site-title');
+    if (logo) {
+      logo.style.cursor = "pointer";
+      logo.addEventListener('click', showHintNumber);
+    }
+  });
+
+  // Случайные всплывашки каждые 30-60 секунд
+  setInterval(() => {
+    showHintNumber();
+  }, (30 + Math.floor(Math.random() * 30)) * 1000);
+</script>
+</body>
+</html>

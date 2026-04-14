@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Вступление в КОКОС Esports</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      color: #222;
+      background: linear-gradient(to bottom right, #f5f5f5, #e0e0e0);
+    }
+    header {
+      width: 100%;
+      height: 280px;
+      overflow: hidden;
+    }
+    header img.logo {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    section {
+      padding: 30px;
+      margin: 20px auto;
+      max-width: 900px;
+      background: white;
+      border-radius: 12px;
+      border: 1px solid #ccc;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeInUp 0.8s forwards;
+    }
+    section:nth-child(odd) {
+      animation-delay: 0.3s;
+    }
+    section:nth-child(even) {
+      animation-delay: 0.6s;
+    }
+    h2 {
+      margin-top: 0;
+      font-size: 1.8em;
+      border-bottom: 2px solid #ddd;
+      padding-bottom: 10px;
+    }
+    ul {
+      list-style: none;
+      padding: 0;
+    }
+    li {
+      margin: 5px 0;
+    }
+    .highlight {
+      background: #f9f9f9;
+      padding: 12px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      font-family: monospace;
+    }
+    .btn {
+      display: inline-block;
+      background: black;
+      color: white;
+      padding: 12px 24px;
+      text-decoration: none;
+      border-radius: 8px;
+      margin-top: 20px;
+      transition: transform 0.3s ease, opacity 0.3s ease;
+    }
+    .btn:hover {
+      opacity: 0.85;
+      transform: scale(1.05);
+    }
+    .back {
+      text-align: center;
+      margin: 30px auto;
+    }
+    footer {
+      background: #222;
+      color: white;
+      text-align: center;
+      padding: 20px;
+      font-size: 0.9em;
+      margin-top: 40px;
+    }
+    @keyframes fadeInUp {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <img src="Без импаен1и-1.jpg" alt="КОКОС NEXUS" class="logo">
+</header>
+
+<section>
+  <h2>Тренеры и кураторы</h2>
+  <ul>
+    <li><b>CS2:</b> Тренер CS, Куратор CS</li>
+    <li><b>Dota 2:</b> Тренер Dota, Куратор Dota</li>
+    <li><b>TF2:</b> Тренер TF2, Куратор TF2</li>
+  </ul>
+</section>
+
+<section>
+  <h2>Турниры</h2>
+  <p>Команда планирует участвовать в онлайн-турнирах и локальных лигах. Список будет пополняться.</p>
+</section>
+
+<section>
+  <h2>Зарплата</h2>
+  <p>Зарплата отсутствует. Играем ради удовольствия и опыта!</p>
+</section>
+
+<section>
+  <h2>Как подать заявку</h2>
+  <p>Все заявки принимаются на почту: <b>cone.esports.off@gmail.com</b></p>
+  <div class="highlight">
+    Тема: Хочу в КОКОС<br>
+    Текст письма: Меня зовут [Имя], мне [возраст], играю в [CS2/Dota2/TF2]. Опыт: [коротко].
+  </div>
+</section>
+
+<section>
+  <h2>Премиум-очередь</h2>
+  <p>Есть возможность попасть в команду без собеседования. Для этого нужно приобрести премиум-очередь.</p>
+  <a class="btn" href="https://www.donationalerts.com/r/cone_esports" target="_blank">Купить премиум</a>
+</section>
+
+<div class="back">
+  <a class="btn" href="cone.html">Назад на главную</a>
+</div>
+
+<footer>
+  <p>© 2025 КОКОС Esports. Все права защищены.</p>
+</footer>
+
+</body>
+</html>

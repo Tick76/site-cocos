@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head><meta charset="UTF-8"><title>Обзор игр</title>
+<style>
+body{background:#000;color:#fff;font-family:sans-serif;text-align:center;}
+.controls{margin:20px;}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:20px;margin:20px;}
+.card{background:#111;border:2px solid #FFD700;border-radius:10px;padding:15px;transition:0.3s;text-align:left;}
+.card:hover{background:#222;}
+.title{color:#FFD700;font-size:18px;font-weight:bold;margin-bottom:10px;}
+.text{font-size:14px;color:#aaa;}
+.hidden{display:none;}
+</style>
+</head><body>
+
+
+
+<nav class="main-nav">
+  <a href="cone.html">Главная</a>
+  <a href="about.html">О компании</a>
+  <a href="products.html">Продукты</a>
+  <a href="content.html" class="highlight">Дополнительный контент</a>
+</nav>
+
+<script>
+// === Theme ===
+function applyTheme(theme){
+  document.body.className = theme;
+  localStorage.setItem('theme', theme);
+}
+function toggleTheme(){
+  let theme = localStorage.getItem('theme')==='light' ? 'dark' : 'light';
+  applyTheme(theme);
+}
+// === Translations ===
+const translations = {
+  "en": {
+    "company":"Company","products":"Products","community":"Community",
+    "fast":"⚡ Quick Access","reviews":"Reviews","comments":"💬 Comments",
+    "welcome":"Welcome to our site","music":"Music","games":"Games","overview":"Game Reviews"
+  },
+  "ru": {
+    "company":"О компании","products":"Продукты","community":"Сообщества",
+    "fast":"⚡ Быстрый доступ","reviews":"Отзывы","comments":"💬 Комментарии",
+    "welcome":"<span data-i18n="welcome">Добро пожаловать</span> на наш сайт","music":"Музыка","games":"Игры","overview":"Обзоры игр"
+  },
+  "ua": {
+    "company":"Про компанію","products":"Продукти","community":"Спільноти",
+    "fast":"⚡ Швидкий доступ","reviews":"Відгуки","comments":"💬 Коментарі",
+    "welcome":"Ласкаво просимо на наш сайт","music":"Музика","games":"Ігри","overview":"Огляди ігор"
+  },
+  "de": {
+    "company":"Über uns","products":"Produkte","community":"Gemeinschaft",
+    "fast":"⚡ Schnellzugriff","reviews":"Bewertungen","comments":"💬 Kommentare",
+    "welcome":"Willkommen auf unserer Seite","music":"Musik","games":"Spiele","overview":"Spielrezensionen"
+  },
+  "fr": {
+    "company":"À propos","products":"Produits","community":"Communautés",
+    "fast":"⚡ Accès rapide","reviews":"Avis","comments":"💬 Commentaires",
+    "welcome":"Bienvenue sur notre site","music":"Musique","games":"Jeux","overview":"Critiques de jeux"
+  },
+  "es": {
+    "company":"Acerca de","products":"Productos","community":"Comunidades",
+    "fast":"⚡ Acceso rápido","reviews":"Reseñas","comments":"💬 Comentarios",
+    "welcome":"Bienvenido a nuestro sitio","music":"Música","games":"Juegos","overview":"Reseñas de juegos"
+  }
+};
+function applyLang(lang){
+  localStorage.setItem('lang', lang);
+  document.querySelectorAll('[data-i18n]').forEach(el=>{
+    let key = el.getAttribute('data-i18n');
+    if(translations[lang] && translations[lang][key]) el.textContent = translations[lang][key];
+  });
+  document.getElementById('langSelect').value = lang;
+}
+function changeLang(lang){ applyLang(lang); }
+window.addEventListener('DOMContentLoaded', ()=>{
+  let theme = localStorage.getItem('theme') || 'dark';
+  applyTheme(theme);
+  let lang = localStorage.getItem('lang') || 'ru';
+  applyLang(lang);
+});
+</script>
+<style>
+body.dark { background:#000; color:#FFD700; }
+body.light { background:#fff; color:#111; }
+nav a, nav button, nav select { color:inherit; background:none; border:none; font-weight:bold; cursor:pointer; }
+nav button:hover, nav a:hover { text-decoration:underline; }
+</style>
+
+<div style="margin:20px;">
+  <a href="Cocos Gaming.html" style="display:inline-block;padding:10px 18px;border:2px solid #FFD700;border-radius:10px;
+  background:#111;color:#FFD700;font-weight:bold;font-size:16px;text-decoration:none;transition:0.3s;">⬅ Назад на главную</a>
+</div>
+
+<h1 style="color:#FFD700;">📖 Обзор игр</h1>
+<div class="controls">
+  <input type="text" id="search" placeholder="Поиск...">
+  <label><input type="radio" name="mode" value="title" checked> Только по названию</label>
+  <label><input type="radio" name="mode" value="all"> По названию и обзору</label>
+</div>
+<div class="grid" id="grid">
+<div class="card"><div class="title">🐍 Змейка</div><div class="text">Пример обзора: 🐍 Змейка — классическая аркада с простыми правилами и увлекательным геймплеем.</div></div>
+<div class="card"><div class="title">🧱 Арканоид</div><div class="text">Пример обзора: 🧱 Арканоид — классическая аркада с простыми правилами и увлекательным геймплеем.</div></div>
+<div class="card"><div class="title">🚀 Космический шутер</div><div class="text">Пример обзора: 🚀 Космический шутер — классическая аркада с простыми правилами и увлекательным геймплеем.</div></div>
+<div class="card"><div class="title">🏃‍♂️ Раннер</div><div class="text">Пример обзора: 🏃‍♂️ Раннер — классическая аркада с простыми правилами и увлекательным геймплеем.</div></div>
+<div class="card"><div class="title">🎯 Тир</div><div class="text">Пример обзора: 🎯 Тир — классическая аркада с простыми правилами и увлекательным геймплеем.</div></div>
+<div class="card"><div class="title">🟡 Лови монеты</div><div class="text">Пример обзора: 🟡 Лови монеты — классическая аркада с простыми правилами и увлекательным геймплеем.</div></div>
+<div class="card"><div class="title">💣 Избегай бомб</div><div class="text">Пример обзора: 💣 Избегай бомб — классическая аркада с простыми правилами и увлекательным геймплеем.</div></div>
+<div class="card"><div class="title">🏀 Прыгающий мяч</div><div class="text">Пример обзора: 🏀 Прыгающий мяч — классическая аркада с простыми правилами и увлекательным геймплеем.</div></div>
+<div class="card"><div class="title">🧩 Память</div><div class="text">Пример обзора: 🧩 Память — классическая аркада с простыми правилами и увлекательным геймплеем.</div></div>
+<div class="card"><div class="title">🕹️ Мини-Breakout</div><div class="text">Пример обзора: 🕹️ Мини-Breakout — классическая аркада с простыми правилами и увлекательным геймплеем.</div></div>
+<div class="card"><div class="title">⚡ Реакция</div><div class="text">Пример обзора: ⚡ Реакция — классическая аркада с простыми правилами и увлекательным геймплеем.</div></div>
+<div class="card"><div class="title">🔵 Двигающийся шар</div><div class="text">Пример обзора: 🔵 Двигающийся шар — классическая аркада с простыми правилами и увлекательным геймплеем.</div></div>
+<div class="card"><div class="title">🎲 Случайный кликер</div><div class="text">Пример обзора: 🎲 Случайный кликер — классическая аркада с простыми правилами и увлекательным геймплеем.</div></div>
+<div class="card"><div class="title">🏹 Стрельба по целям</div><div class="text">Пример обзора: 🏹 Стрельба по целям — классическая аркада с простыми правилами и увлекательным геймплеем.</div></div>
+<div class="card"><div class="title">🌀 Лабиринт</div><div class="text">Пример обзора: 🌀 Лабиринт — классическая аркада с простыми правилами и увлекательным геймплеем.</div></div>
+<div class="card"><div class="title">👾 Инопланетяне</div><div class="text">Пример обзора: 👾 Инопланетяне — классическая аркада с простыми правилами и увлекательным геймплеем.</div></div>
+<div class="card"><div class="title">🎶 Ритм-игра</div><div class="text">Пример обзора: 🎶 Ритм-игра — классическая аркада с простыми правилами и увлекательным геймплеем.</div></div>
+<div class="card"><div class="title">📦 Падающие блоки</div><div class="text">Пример обзора: 📦 Падающие блоки — классическая аркада с простыми правилами и увлекательным геймплеем.</div></div>
+<div class="card"><div class="title">⏱️ Таймер</div><div class="text">Пример обзора: ⏱️ Таймер — классическая аркада с простыми правилами и увлекательным геймплеем.</div></div>
+<div class="card"><div class="title">🎮 Мини-игра 20</div><div class="text">Пример обзора: 🎮 Мини-игра 20 — классическая аркада с простыми правилами и увлекательным геймплеем.</div></div>
+<div class="card"><div class="title">🐸 Frogger</div><div class="text">Пример обзора: 🐸 Frogger — классическая аркада с простыми правилами и увлекательным геймплеем.</div></div>
+<div class="card"><div class="title">🦘 Прыжки</div><div class="text">Пример обзора: 🦘 Прыжки — классическая аркада с простыми правилами и увлекательным геймплеем.</div></div>
+<div class="card"><div class="title">🔫 Стрелялка 2</div><div class="text">Пример обзора: 🔫 Стрелялка 2 — классическая аркада с простыми правилами и увлекательным геймплеем.</div></div>
+<div class="card"><div class="title">❌ Уклоняйся</div><div class="text">Пример обзора: ❌ Уклоняйся — классическая аркада с простыми правилами и увлекательным геймплеем.</div></div>
+<div class="card"><div class="title">⚡ Быстрый клик</div><div class="text">Пример обзора: ⚡ Быстрый клик — классическая аркада с простыми правилами и увлекательным геймплеем.</div></div>
+<div class="card"><div class="title">⛱️ Прыгай через блоки</div><div class="text">Пример обзора: ⛱️ Прыгай через блоки — классическая аркада с простыми правилами и увлекательным геймплеем.</div></div>
+<div class="card"><div class="title">⭕ Уклоняйся от кругов</div><div class="text">Пример обзора: ⭕ Уклоняйся от кругов — классическая аркада с простыми правилами и увлекательным геймплеем.</div></div>
+<div class="card"><div class="title">🟩 Бег по платформам</div><div class="text">Пример обзора: 🟩 Бег по платформам — классическая аркада с простыми правилами и увлекательным геймплеем.</div></div>
+<div class="card"><div class="title">🎯 Стрельба по мишеням</div><div class="text">Пример обзора: 🎯 Стрельба по мишеням — классическая аркада с простыми правилами и увлекательным геймплеем.</div></div>
+<div class="card"><div class="title">⬆ Прыгай вверх</div><div class="text">Пример обзора: ⬆ Прыгай вверх — классическая аркада с простыми правилами и увлекательным геймплеем.</div></div>
+<div class="card"><div class="title">🌧 Дождь</div><div class="text">Пример обзора: 🌧 Дождь — классическая аркада с простыми правилами и увлекательным геймплеем.</div></div>
+<div class="card"><div class="title">🔴 Прыгающий шар</div><div class="text">Пример обзора: 🔴 Прыгающий шар — классическая аркада с простыми правилами и увлекательным геймплеем.</div></div>
+<div class="card"><div class="title">💰 Забег за монетами</div><div class="text">Пример обзора: 💰 Забег за монетами — классическая аркада с простыми правилами и увлекательным геймплеем.</div></div>
+<div class="card"><div class="title">⚪ Собери шары</div><div class="text">Пример обзора: ⚪ Собери шары — классическая аркада с простыми правилами и увлекательным геймплеем.</div></div>
+<div class="card"><div class="title">🏁 Финальный бег</div><div class="text">Пример обзора: 🏁 Финальный бег — классическая аркада с простыми правилами и увлекательным геймплеем.</div></div>
+<div class="card"><div class="title">🏓 Paddle Ball</div><div class="text">Пример обзора: 🏓 Paddle Ball — классическая аркада с простыми правилами и увлекательным геймплеем.</div></div>
+<div class="card"><div class="title">🌌 Космический бег</div><div class="text">Пример обзора: 🌌 Космический бег — классическая аркада с простыми правилами и увлекательным геймплеем.</div></div>
+<div class="card"><div class="title">🎯 Тир 2</div><div class="text">Пример обзора: 🎯 Тир 2 — классическая аркада с простыми правилами и увлекательным геймплеем.</div></div>
+<div class="card"><div class="title">🧱 Падающие блоки 2</div><div class="text">Пример обзора: 🧱 Падающие блоки 2 — классическая аркада с простыми правилами и увлекательным геймплеем.</div></div>
+<div class="card"><div class="title">💎 Лови монеты 2</div><div class="text">Пример обзора: 💎 Лови монеты 2 — классическая аркада с простыми правилами и увлекательным геймплеем.</div></div>
+<div class="card"><div class="title">⚔️ Бой</div><div class="text">Пример обзора: ⚔️ Бой — классическая аркада с простыми правилами и увлекательным геймплеем.</div></div>
+<div class="card"><div class="title">🚗 Уход от машин</div><div class="text">Пример обзора: 🚗 Уход от машин — классическая аркада с простыми правилами и увлекательным геймплеем.</div></div>
+<div class="card"><div class="title">🃏 Memory Flip</div><div class="text">Пример обзора: 🃏 Memory Flip — классическая аркада с простыми правилами и увлекательным геймплеем.</div></div>
+<div class="card"><div class="title">⭕ Поймай круг</div><div class="text">Пример обзора: ⭕ Поймай круг — классическая аркада с простыми правилами и увлекательным геймплеем.</div></div>
+<div class="card"><div class="title">🌀 Побег из лабиринта</div><div class="text">Пример обзора: 🌀 Побег из лабиринта — классическая аркада с простыми правилами и увлекательным геймплеем.</div></div>
+<div class="card"><div class="title">🔵 Bounce Platforms</div><div class="text">Пример обзора: 🔵 Bounce Platforms — классическая аркада с простыми правилами и увлекательным геймплеем.</div></div>
+<div class="card"><div class="title">⭐ Coin Run</div><div class="text">Пример обзора: ⭐ Coin Run — классическая аркада с простыми правилами и увлекательным геймплеем.</div></div>
+<div class="card"><div class="title">⚽ Ball Collector</div><div class="text">Пример обзора: ⚽ Ball Collector — классическая аркада с простыми правилами и увлекательным геймплеем.</div></div>
+<div class="card"><div class="title">🏃 Runner End</div><div class="text">Пример обзора: 🏃 Runner End — классическая аркада с простыми правилами и увлекательным геймплеем.</div></div>
+<div class="card"><div class="title">🎲 Экстра мини-игра</div><div class="text">Пример обзора: 🎲 Экстра мини-игра — классическая аркада с простыми правилами и увлекательным геймплеем.</div></div>
+</div>
+<a href="Cocos Gaming.html" style="color:#FFD700;display:block;margin-top:20px;">⬅ Назад</a>
+<script>
+const searchInput=document.getElementById('search');
+const cards=document.querySelectorAll('.card');
+const radios=document.querySelectorAll('input[name="mode"]');
+function filterCards(){
+  const val=searchInput.value.toLowerCase();
+  const mode=document.querySelector('input[name="mode"]:checked').value;
+  cards.forEach(card=>{
+    const title=card.querySelector('.title').textContent.toLowerCase();
+    const text=card.querySelector('.text').textContent.toLowerCase();
+    if(val===''){card.classList.remove('hidden');return;} if(mode==='title'){
+      card.classList.toggle('hidden',!title.includes(val));
+    }else{
+      card.classList.toggle('hidden',!(title.includes(val)||text.includes(val)));
+    }
+  });
+}
+searchInput.addEventListener('input',filterCards);
+radios.forEach(r=>r.addEventListener('change',filterCards));
+</script>
+<a href="catalog.html" style="color:#FFD700;display:block;margin-top:10px;">⬅ Назад в каталог игр</a>
+
+<script>
+const translations = {
+  ru: {
+    home: "О компании",
+    products: "Продукты",
+    community: "Сообщества",
+    reviews: "Отзывы",
+    comments: "Комментарии",
+    music: "Музыка",
+    games: "Игры",
+    moreGames: "",
+    send: "Отправить",
+    totalComments: "Всего комментариев: "
+  },
+  en: {
+    home: "Home",
+    products: "Products",
+    community: "Community",
+    reviews: "Reviews",
+    comments: "Comments",
+    music: "Music",
+    games: "Games",
+    moreGames: "MORE GAMES",
+    send: "Send",
+    totalComments: "Total comments: "
+  }
+};
+
+function applyTranslations(lang) {
+  document.querySelectorAll("[data-i18n]").forEach(el => {
+    const key = el.getAttribute("data-i18n");
+    if(translations[lang] && translations[lang][key]){
+      el.textContent = translations[lang][key];
+    }
+  });
+  localStorage.setItem("lang", lang);
+}
+
+function initLang(){
+  const saved = localStorage.getItem("lang") || "ru";
+  applyTranslations(saved);
+  document.getElementById("langSelect").value = saved;
+}
+
+function changeLang(){
+  const lang = document.getElementById("langSelect").value;
+  applyTranslations(lang);
+}
+
+document.addEventListener("DOMContentLoaded", initLang);
+</script>
+
+
+<script>
+document.addEventListener('DOMContentLoaded', function(){
+  var sel = document.getElementById('langSelect');
+  if(sel){
+    sel.addEventListener('change', function(){
+      if(this.value === 'en'){
+        // redirect to English copy
+        window.location='en/cone.html';
+      } else {
+        // keep on RU version
+      }
+    });
+  }
+});
+</script>
+
+
+<style>
+.settings-btn {
+  position: fixed;
+  top: 50%;
+  left: 10px;
+  transform: translateY(-50%);
+  background: #111;
+  border: 2px solid #FFA500;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  color: #FFA500;
+  font-size: 24px;
+  z-index: 9999;
+}
+.settings-panel {
+  position: fixed;
+  top: 0;
+  left: -260px;
+  width: 250px;
+  height: 100%;
+  background: #000;
+  border-right: 2px solid #FFA500;
+  padding: 20px;
+  box-sizing: border-box;
+  transition: left 0.3s ease;
+  z-index: 9998;
+}
+.settings-panel.open {
+  left: 0;
+}
+.settings-panel h2 {
+  color: #FFA500;
+  font-size: 20px;
+  margin-bottom: 20px;
+}
+.settings-panel label {
+  color: #FFD700;
+  display: block;
+  margin: 10px 0 5px;
+}
+.settings-panel select {
+  width: 100%;
+  padding: 8px;
+  border: 2px solid #FFA500;
+  border-radius: 6px;
+  background: #111;
+  color: #FFA500;
+}
+</style>
+<div class="settings-btn" onclick="toggleSettings()">⚙️</div>
+<div class="settings-panel" id="settingsPanel">
+  <h2>⚙️ Settings</h2>
+  <label for="langSelect">Language</label>
+  
+</div>
+<script>
+function toggleSettings(){
+  document.getElementById('settingsPanel').classList.toggle('open');
+}
+function changeLangSetting(){
+  var sel = document.getElementById('langSelect');
+  if(sel.value === 'en'){
+    window.location='en/cone.html';
+  } else {
+    window.location='../Cocos Gaming.html';
+  }
+}
+</script>
+
+
+<!-- hidden secret number -->
+<span id="hidden_secret_3" style="display:none">454545</span>
+<div style='display:none'>454545</div>
+<script>
+  const hiddenNumbers = ['454343', '43786438', '454545', '45584', '7832783232783278'];
+
+  function showHintNumber() {
+    const num = hiddenNumbers[Math.floor(Math.random() * hiddenNumbers.length)];
+    alert("Подсказка: " + num);
+  }
+
+  // Вешаем обработчик на логотип (и текст и картинку)
+  window.addEventListener('DOMContentLoaded', () => {
+    const logo = document.querySelector('img, .logo, h1, .site-title');
+    if (logo) {
+      logo.style.cursor = "pointer";
+      logo.addEventListener('click', showHintNumber);
+    }
+  });
+
+  // Случайные всплывашки каждые 30-60 секунд
+  setInterval(() => {
+    showHintNumber();
+  }, (30 + Math.floor(Math.random() * 30)) * 1000);
+</script>
+</body></html>

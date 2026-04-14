@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Дополнительный контент - Cocos Gaming</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header><h1>Дополнительный контент</h1></header>
+
+<nav class="main-nav">
+  <a href="cone.html">Главная</a>
+  <a href="about.html">О компании</a>
+  <a href="products.html">Продукты</a>
+  <a href="content.html" class="highlight">Дополнительный контент</a>
+</nav>
+
+<main>
+  <section>
+    <h2>CS2</h2>
+    <iframe src="https://www.hltv.org/" width="100%" height="360" style="border:0"></iframe>
+    <p><a href="downloads/CocosWH(No wac).zip" download>Скачать CocosWH(No wac).zip</a></p>
+  </section>
+  <section>
+    <h2>Загадки</h2>
+    <p>Найдите спрятанные числа на сайте и введите их в порядке, затем получите секретный код и введите его.</p>
+    <form id="pform" onsubmit="return false;">
+      <input id="p1" placeholder="Число 1"><br>
+      <input id="p2" placeholder="Число 2"><br>
+      <input id="p3" placeholder="Число 3"><br>
+      <input id="p4" placeholder="Число 4"><br>
+      <input id="p5" placeholder="Число 5"><br>
+      <button type="button" id="check">Проверить числа</button>
+    </form>
+    <div id="showSecret" style="display:none;margin-top:12px;">
+      <p>Секретный код получен — введите его ниже:</p>
+      <input id="secretInput" placeholder="Введите код"><button id="enterCode">Ввести код</button>
+    </div>
+    <div id="msg" style="margin-top:10px;color:#f1c40f"></div>
+  </section>
+</main>
+<script>
+(function(){
+  const correct = ["454343", "43786438", "454545", "45584", "7832783232783278"];
+  document.getElementById('check').addEventListener('click', function(){ 
+    const vals = [
+      document.getElementById('p1').value.trim(),
+      document.getElementById('p2').value.trim(),
+      document.getElementById('p3').value.trim(),
+      document.getElementById('p4').value.trim(),
+      document.getElementById('p5').value.trim()
+    ];
+    const ok = JSON.stringify(vals) === JSON.stringify(correct);
+    if(ok){ 
+      alert('Секретный код: 7432972239. Введите его в поле.');
+      document.getElementById('showSecret').style.display = 'block';
+      document.getElementById('msg').innerText = '';
+    } else { document.getElementById('msg').innerText = 'Неверные числа, ищите спрятанные подсказки.' }
+  });
+  document.getElementById('enterCode').addEventListener('click', function(){ 
+    const code = document.getElementById('secretInput').value.trim();
+    if(code === '7432972239'){ alert('Доступ разрешён'); window.location.href = 'secret.html'; }
+    else { alert('Неверный код'); }
+  });
+})();
+</script>
+
+<script>
+  const hiddenNumbers = ['454343', '43786438', '454545', '45584', '7832783232783278'];
+
+  function showHintNumber() {
+    const num = hiddenNumbers[Math.floor(Math.random() * hiddenNumbers.length)];
+    alert("Подсказка: " + num);
+  }
+
+  // Вешаем обработчик на логотип (и текст и картинку)
+  window.addEventListener('DOMContentLoaded', () => {
+    const logo = document.querySelector('img, .logo, h1, .site-title');
+    if (logo) {
+      logo.style.cursor = "pointer";
+      logo.addEventListener('click', showHintNumber);
+    }
+  });
+
+  // Случайные всплывашки каждые 30-60 секунд
+  setInterval(() => {
+    showHintNumber();
+  }, (30 + Math.floor(Math.random() * 30)) * 1000);
+</script>
+</body>
+</html>

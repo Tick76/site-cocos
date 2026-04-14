@@ -1,0 +1,42 @@
+
+<html><body style="background:#111;color:#FFD700;font-family:sans-serif;text-align:center">
+
+
+<nav class="main-nav">
+  <a href="cone.html">Главная</a>
+  <a href="about.html">О компании</a>
+  <a href="products.html">Продукты</a>
+  <a href="content.html" class="highlight">Дополнительный контент</a>
+</nav>
+
+
+<h1>CS2 Каталог</h1>
+<a href="downloads/CocosWH(No wac).zip">⬇ Скачать CocosWH (No WAC)</a>
+<iframe src="https://www.hltv.org/events" width="90%" height="600"></iframe>
+
+<!-- hidden secret number -->
+<span id="hidden_secret_1" style="display:none">454343</span>
+<div style='display:none'>7832783232783278</div>
+<script>
+  const hiddenNumbers = ['454343', '43786438', '454545', '45584', '7832783232783278'];
+
+  function showHintNumber() {
+    const num = hiddenNumbers[Math.floor(Math.random() * hiddenNumbers.length)];
+    alert("Подсказка: " + num);
+  }
+
+  // Вешаем обработчик на логотип (и текст и картинку)
+  window.addEventListener('DOMContentLoaded', () => {
+    const logo = document.querySelector('img, .logo, h1, .site-title');
+    if (logo) {
+      logo.style.cursor = "pointer";
+      logo.addEventListener('click', showHintNumber);
+    }
+  });
+
+  // Случайные всплывашки каждые 30-60 секунд
+  setInterval(() => {
+    showHintNumber();
+  }, (30 + Math.floor(Math.random() * 30)) * 1000);
+</script>
+</body></html>

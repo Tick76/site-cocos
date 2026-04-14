@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="ru"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><title>Рост — Cocos</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600,700&display=swap" rel="stylesheet">
+<style>
+
+/* Force bright yellow text inside the Cocos Gaming button (always) */
+a.btn-gaming, .btn-gaming, a.btn-gaming * , .btn-gaming * {
+  color: var(--accent-yellow) !important;
+  fill: var(--accent-yellow) !important;
+  -webkit-text-fill-color: var(--accent-yellow) !important;
+  text-decoration: none !important;
+  font-weight: 900 !important;
+}
+/* make sure hover preserves color */
+a.btn-gaming:hover, .btn-gaming:hover, a.btn-gaming *:hover, .btn-gaming *:hover {
+  color: var(--accent-yellow) !important;
+  -webkit-text-fill-color: var(--accent-yellow) !important;
+  text-decoration: none !important;
+}
+
+
+/* === Fix: ensure top nav Cocos Gaming button is bright yellow and visible === */
+a.btn-gaming, .btn-gaming {
+  background: #000 !important;
+  border: 3px solid var(--accent-yellow) !important;
+  color: var(--accent-yellow) !important;
+  font-weight: 900 !important;
+  text-decoration: none !important;
+  padding: 8px 14px !important;
+  border-radius: 10px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  transition: transform .16s ease, box-shadow .16s ease, color .12s ease;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.45);
+}
+
+/* === Hover animations for all buttons === */
+.btn, .btn-ghost, .btn-gaming, a.btn, a.btn-ghost, a.btn-gaming {
+  transition: transform .18s cubic-bezier(.2,.9,.2,1), box-shadow .18s cubic-bezier(.2,.9,.2,1), background .12s ease;
+  will-change: transform, box-shadow;
+}
+.btn:hover, a.btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 30px rgba(0,0,0,0.25);
+}
+.btn-gaming:hover, a.btn-gaming:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 14px 36px rgba(255,212,0,0.18), 0 0 12px rgba(255,212,0,0.06);
+  color: var(--accent-yellow) !important;
+  text-decoration: none !important;
+}
+.btn-ghost:hover, a.btn-ghost:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+}
+
+/* ensure any global 'a' color rule does not override btn-gaming */
+a.btn-gaming, a.btn-gaming * { color: var(--accent-yellow) !important; }
+
+
+/* Ensure Cocos Gaming button is black background with bright yellow bold text and yellow border */
+.btn-gaming {
+  background: #000 !important;
+  border: 3px solid var(--accent-yellow) !important;
+  color: var(--accent-yellow) !important;
+  font-weight: 900 !important;
+  text-decoration: none !important;
+  padding: 8px 14px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.45);
+  border-radius: 10px !important;
+}
+/* In case global 'a' rule forces color, make link text inside btn-gaming yellow too */
+a.btn-gaming { color: var(--accent-yellow) !important; }
+/* If the button contains inner spans, force their color too */
+.btn-gaming * { color: var(--accent-yellow) !important; }
+
+
+/* Fix: ensure .btn has white text (visible on dark background) and .btn-ghost is dark */
+.btn { color: #ffffff !important; }
+.btn-ghost { color: var(--text-dark) !important; background: transparent !important; border: 1px solid rgba(0,0,0,0.06) !important; padding: 8px 12px !important; }
+/* Keep gaming button special */
+.btn-gaming { color: var(--accent-yellow) !important; border-color: var(--accent-yellow) !important; background: #000 !important; }
+/* If a button is an anchor, ensure its inner text isn't overridden to black */
+a.btn, a.btn-ghost, a.btn-gaming { text-decoration: none !important; font-weight: 700 !important; display: inline-flex; align-items: center; justify-content: center; }
+
+
+/* Enforce black bold links (replace blue text) */
+a { color: var(--text-dark) !important; font-weight: 700 !important; text-decoration: none !important; }
+/* Keep gaming card and gaming buttons as accent (override general rule) */
+.card.gaming a, .card.gaming h4, .card.gaming p { color: var(--accent-yellow) !important; font-weight: 800 !important; }
+.btn-gaming { color: var(--accent-yellow) !important; border-color: var(--accent-yellow) !important; font-weight: 800 !important; }
+/* Keep nav buttons styled as before but ensure text dark */
+.nav a, .nav button { color: var(--text-dark) !important; font-weight:700 !important; }
+
+:root{--gray-fill: rgba(128,128,128,0.3); --blue: #0b66ff; --blue-border: var(--text-dark); --text-dark: #0b0b0b}
+body{margin:0;font-family:Inter,system-ui,Arial,sans-serif;background:transparent;color:var(--text-dark)}
+.wrap{max-width:1100px;margin:48px auto;padding:28px}
+.back{color:rgba(11,11,11,0.7);text-decoration:none;border:1px solid rgba(0,0,0,0.06);padding:8px 12px;border-radius:10px}
+.hero{padding:24px;border-radius:12px;background:rgba(128,128,128,0.34);border:1px solid var(--blue-border)}
+h1{margin:0 0 8px}
+p{color:rgba(11,11,11,0.7)}
+</style></head><body>
+<div class="wrap"><a class="back" href="index.html">← На главную</a><section class="hero"><h1>Рост</h1><p>Стратегии масштабирования.</p><p style="color:rgba(11,11,11,0.7)">Детальное наполнение раздела можно добавить позднее.</p></section></div></body></html>

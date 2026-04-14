@@ -1,0 +1,333 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Cocos — Холдинг</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+<style>
+
+/* Force bright yellow text inside the Cocos Gaming button (always) */
+a.btn-gaming, .btn-gaming, a.btn-gaming * , .btn-gaming * {
+  color: var(--accent-yellow) !important;
+  fill: var(--accent-yellow) !important;
+  -webkit-text-fill-color: var(--accent-yellow) !important;
+  text-decoration: none !important;
+  font-weight: 900 !important;
+}
+/* make sure hover preserves color */
+a.btn-gaming:hover, .btn-gaming:hover, a.btn-gaming *:hover, .btn-gaming *:hover {
+  color: var(--accent-yellow) !important;
+  -webkit-text-fill-color: var(--accent-yellow) !important;
+  text-decoration: none !important;
+}
+
+
+/* === Fix: ensure top nav Cocos Gaming button is bright yellow and visible === */
+a.btn-gaming, .btn-gaming {
+  background: #000 !important;
+  border: 3px solid var(--accent-yellow) !important;
+  color: var(--accent-yellow) !important;
+  font-weight: 900 !important;
+  text-decoration: none !important;
+  padding: 8px 14px !important;
+  border-radius: 10px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  transition: transform .16s ease, box-shadow .16s ease, color .12s ease;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.45);
+}
+
+/* === Hover animations for all buttons === */
+.btn, .btn-ghost, .btn-gaming, a.btn, a.btn-ghost, a.btn-gaming {
+  transition: transform .18s cubic-bezier(.2,.9,.2,1), box-shadow .18s cubic-bezier(.2,.9,.2,1), background .12s ease;
+  will-change: transform, box-shadow;
+}
+.btn:hover, a.btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 30px rgba(0,0,0,0.25);
+}
+.btn-gaming:hover, a.btn-gaming:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 14px 36px rgba(255,212,0,0.18), 0 0 12px rgba(255,212,0,0.06);
+  color: var(--accent-yellow) !important;
+  text-decoration: none !important;
+}
+.btn-ghost:hover, a.btn-ghost:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+}
+
+/* ensure any global 'a' color rule does not override btn-gaming */
+a.btn-gaming, a.btn-gaming * { color: var(--accent-yellow) !important; }
+
+
+/* Ensure Cocos Gaming button is black background with bright yellow bold text and yellow border */
+.btn-gaming {
+  background: #000 !important;
+  border: 3px solid var(--accent-yellow) !important;
+  color: var(--accent-yellow) !important;
+  font-weight: 900 !important;
+  text-decoration: none !important;
+  padding: 8px 14px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.45);
+  border-radius: 10px !important;
+}
+/* In case global 'a' rule forces color, make link text inside btn-gaming yellow too */
+a.btn-gaming { color: var(--accent-yellow) !important; }
+/* If the button contains inner spans, force their color too */
+.btn-gaming * { color: var(--accent-yellow) !important; }
+
+
+/* Fix: ensure .btn has white text (visible on dark background) and .btn-ghost is dark */
+.btn { color: #ffffff !important; }
+.btn-ghost { color: var(--text-dark) !important; background: transparent !important; border: 1px solid rgba(0,0,0,0.06) !important; padding: 8px 12px !important; }
+/* Keep gaming button special */
+.btn-gaming { color: var(--accent-yellow) !important; border-color: var(--accent-yellow) !important; background: #000 !important; }
+/* If a button is an anchor, ensure its inner text isn't overridden to black */
+a.btn, a.btn-ghost, a.btn-gaming { text-decoration: none !important; font-weight: 700 !important; display: inline-flex; align-items: center; justify-content: center; }
+
+
+/* Enforce black bold links (replace blue text) */
+a { color: var(--text-dark) !important; font-weight: 700 !important; text-decoration: none !important; }
+/* Keep gaming card and gaming buttons as accent (override general rule) */
+.card.gaming a, .card.gaming h4, .card.gaming p { color: var(--accent-yellow) !important; font-weight: 800 !important; }
+.btn-gaming { color: var(--accent-yellow) !important; border-color: var(--accent-yellow) !important; font-weight: 800 !important; }
+/* Keep nav buttons styled as before but ensure text dark */
+.nav a, .nav button { color: var(--text-dark) !important; font-weight:700 !important; }
+
+
+/* Special styling for Cocos Gaming card */
+.card.gaming {
+  background: rgba(0,0,0,0.88) !important;
+  border: 3px solid var(--accent-yellow) !important;
+  color: var(--accent-yellow) !important;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.45);
+}
+.card.gaming h4, .card.gaming p, .card.gaming a { color: var(--accent-yellow) !important; }
+.card.gaming .btn-gaming, .card.gaming .btn {
+  background: #000 !important;
+  color: var(--accent-yellow) !important;
+  border: 3px solid var(--accent-yellow) !important;
+  padding: 8px 12px;
+  border-radius: 10px;
+  text-decoration: none;
+  font-weight:800;
+}
+.card.gaming .btn-gaming:hover, .card.gaming .btn:hover {
+  box-shadow: 0 6px 20px rgba(255,212,0,0.18);
+}
+
+:root{
+  --gray-fill: rgba(128,128,128,0.3);
+  --gray-fill-hero: rgba(128,128,128,0.34);
+  --blue: #0b66ff;
+  --blue-border: var(--text-dark);
+  --text-dark: #0b0b0b;
+  --accent-yellow: #ffd400;
+  --radius:14px;
+}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0;font-family:Inter,system-ui,Arial,sans-serif;background:transparent;color:var(--text-dark);}
+.container{max-width:1100px;margin:40px auto;padding:28px}
+.header{display:flex;align-items:center;gap:18px}
+.logo-mark{width:64px;height:64px;border-radius:12px;background:linear-gradient(135deg,var(--blue),#7fb3ff);display:flex;align-items:center;justify-content:center;font-weight:800;color:white;font-size:26px;border:1px solid rgba(0,0,0,0.06)}
+.title h1{margin:0;font-size:24px;color:var(--text-dark)}
+.title p{margin:6px 0 0;color:rgba(11,11,11,0.7)}
+
+/* nav */
+.nav{margin-left:auto;display:flex;gap:12px;align-items:center}
+.nav a, .nav button{color:var(--text-dark);text-decoration:none;padding:8px 12px;border-radius:10px;background:transparent;border:1px solid rgba(0,0,0,0.06);cursor:pointer}
+
+/* hero and sections */
+.hero{margin-top:24px;padding:36px;border-radius:var(--radius);background:var(--gray-fill-hero);border:1px solid var(--blue-border)}
+.hero h2{font-size:34px;margin:0 0 12px;line-height:1.02}
+.lead{color:rgba(11,11,11,0.75);font-size:15px}
+
+.section{margin-top:28px;padding:22px;border-radius:12px;background:var(--gray-fill);border:1px solid var(--blue-border)}
+.section h3{margin:0 0 6px}
+
+/* cards */
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin-top:14px}
+.card{padding:14px;border-radius:10px;background:var(--gray-fill);border:1px solid var(--blue-border)}
+.card a{color:var(--text-dark);font-weight:600;text-decoration:underline}
+
+/* buttons */
+.btn{display:inline-flex;align-items:center;gap:10px;padding:10px 14px;border-radius:12px;background:var(--text-dark);color:white;text-decoration:none;font-weight:700}
+.btn-ghost{background:transparent;border:1px solid rgba(0,0,0,0.06);color:var(--text-dark)}
+.btn-gaming{display:inline-flex;align-items:center;gap:10px;padding:10px 14px;border-radius:12px;background:#000;border:3px solid var(--accent-yellow);color:var(--accent-yellow);font-weight:800;text-decoration:none}
+
+/* form */
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
+.input, textarea{width:100%;padding:10px;border-radius:8px;border:1px solid rgba(0,0,0,0.08);background:transparent;color:var(--text-dark)}
+textarea{min-height:120px}
+
+/* footer */
+.footer{margin-top:40px;color:rgba(11,11,11,0.6);text-align:center;padding-bottom:40px}
+
+/* preview safe */
+.preview-note{font-size:13px;color:rgba(11,11,11,0.6);margin-bottom:6px}
+
+@media(max-width:800px){.hero h2{font-size:22px} .grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+  <!-- video element: place bg.mp4 here if you have it -->
+  <div style="position:fixed;inset:0;z-index:-3;overflow:hidden">
+    <video id="bgVideo" autoplay muted loop playsinline style="position:absolute;left:50%;top:50%;min-width:100%;min-height:100%;transform:translate(-50%,-50%);object-fit:cover;">
+      <source src="bg.mp4" type="video/mp4">
+    </video>
+  </div>
+
+  <div class="container">
+    <header class="header">
+      <div class="logo-mark">C</div>
+      <div class="title"><h1>Cocos</h1><p>Холдинг: игры • технологии • медиа</p></div>
+      <nav class="nav"><a href="#about">О нас</a><a href="#services">Услуги</a><a class="btn-gaming" href="Cocos Gaming.html">Cocos Gaming</a></nav>
+    </header>
+
+    <section class="hero" id="about">
+      <h2>Мы создаём игры и цифровые продукты, которые любят пользователи</h2>
+      <p class="lead">Cocos — холдинг, который объединяет команды с сильной продуктовой культурой. Помогаем проектам от концепта до релиза — с фокусом на качестве и монетизации.</p>
+      <div style="margin-top:16px"><a class="btn" href="#services">Наши услуги</a> <a class="btn-ghost" href="#careers">Вакансии</a></div>
+    </section>
+
+    <section class="section" id="services">
+      <h3>Услуги и направления</h3>
+      <div class="grid">
+        <div class="card"><a href="product_strategy.html">Product strategy</a><p style="color:rgba(11,11,11,0.7);margin-top:8px">Стратегия, roadmap и продукты.</p></div>
+        <div class="card"><a href="liveops_analytics.html">Live-ops & analytics</a><p style="color:rgba(11,11,11,0.7);margin-top:8px">Поддержка, A/B, дашборды.</p></div>
+        <div class="card"><a href="monetization.html">Monetization</a><p style="color:rgba(11,11,11,0.7);margin-top:8px">Модели дохода и оптимизация.</p></div>
+      </div>
+    </section>
+
+    <section class="section" id="subcompanies">
+      <h3>Подкомпании</h3>
+      <div class="grid">
+        <div class="card" gaming><h4><a class="btn-gaming" href="Cocos Gaming.html">Cocos Gaming</a></h4><p style="color:rgba(11,11,11,0.7)">Игровой дивизион: разработка, live‑ops и монетизация.</p><div style="margin-top:8px"><a class="btn-gaming" href="Cocos Gaming.html">Перейти</a></div></div>
+        <div class="card"><h4><a href="product_strategy.html">Cocos Tech</a></h4><p style="color:rgba(11,11,11,0.7)">Инструменты и SDK для разработчиков.</p></div>
+        <div class="card"><h4><a href="innovation.html">Cocos Media</a></h4><p style="color:rgba(11,11,11,0.7)">Маркетинг, контент и креатив.</p></div>
+      </div>
+    </section>
+
+    <section class="section" id="careers">
+      <h3>Приём на работу</h3>
+      <p style="color:rgba(11,11,11,0.7)">Заполните форму — в случае проблем появится кнопка для отправки письма через Gmail.</p>
+
+      <form id="jobForm" onsubmit="return submitForm(event)" enctype="multipart/form-data">
+        <input type="hidden" name="access_key" value="f4538c5b-c005-4ff3-8721-9e161474f03b">
+        <input type="hidden" name="subject" value="Заявка на работу — Cocos">
+        <div class="form-row">
+          <input class="input" name="name" placeholder="ФИО *" required>
+          <input class="input" name="email" type="email" placeholder="Email *" required>
+        </div>
+        <div><input class="input" name="position" placeholder="Должность"></div>
+        <div style="margin-top:12px"><textarea name="message" placeholder="Кратко о себе"></textarea></div>
+        <div style="margin-top:12px"><label style="display:inline-block;padding:8px 10px;border-radius:8px;border:1px solid rgba(0,0,0,0.06);cursor:pointer"><input type="file" name="resume" style="display:none">Прикрепить резюме</label></div>
+        <div style="margin-top:12px"><button class="btn" type="submit">Отправить заявку</button></div>
+        <div id="jobResult" style="color:rgba(11,11,11,0.7);margin-top:8px"></div>
+        <div style="margin-top:8px"><a id="manualBtn" class="btn-ghost" target="_blank" rel="noopener" style="display:none">Отправить вручную через Gmail</a></div>
+      </form>
+    </section>
+
+    <div class="long-space" style="height:900px"></div>
+
+    <footer class="footer">© Cocos — холдинг. Письма приходят на tick09765@gmail.com</footer>
+  </div>
+
+<script>
+async function submitForm(e){
+  e.preventDefault();
+  const form = document.getElementById('jobForm');
+  const result = document.getElementById('jobResult');
+  const manualBtn = document.getElementById('manualBtn');
+  result.textContent = 'Отправка...';
+  manualBtn.style.display = 'none';
+
+  const fd = new FormData(form);
+  try{
+    const res = await fetch('https://api.web3forms.com/submit', { method:'POST', body: fd });
+    const data = await res.json();
+    if(res.ok && data.success){
+      result.innerHTML = '✅ Заявка отправлена! Спасибо.';
+      form.reset();
+      return false;
+    } else {
+      result.innerHTML = '⚠️ Не удалось отправить через форму. Нажмите кнопку для отправки через Gmail.';
+      showGmailFallback(form, manualBtn);
+      return false;
+    }
+  } catch(err){
+    console.error(err);
+    result.innerHTML = '⚠️ Сеть/сервер недоступен. Нажмите кнопку для отправки через Gmail.';
+    showGmailFallback(form, manualBtn);
+    return false;
+  }
+}
+
+function showGmailFallback(form, btn){
+  const name = encodeURIComponent((form.querySelector('[name=name]')||{}).value || '');
+  const email = encodeURIComponent((form.querySelector('[name=email]')||{}).value || '');
+  const position = encodeURIComponent((form.querySelector('[name=position]')||{}).value || '');
+  const message = encodeURIComponent((form.querySelector('[name=message]')||{}).value || '');
+  const subject = encodeURIComponent((form.querySelector('[name=subject]')||{}).value || 'Заявка на работу — Cocos');
+  const body = `Имя: ${name}%0AEmail: ${email}%0AДолжность: ${position}%0A%0AСообщение:%0A${message}`;
+  const gmailUrl = 'https://mail.google.com/mail/?view=cm&fs=1&to=' + encodeURIComponent('tick09765@gmail.com') + '&su=' + subject + '&body=' + body;
+  btn.href = gmailUrl;
+  btn.style.display = 'inline-flex';
+}
+</script>
+
+<!-- STAFF ACCESS BUTTON (added) -->
+<div style="text-align:center;margin-top:20px;margin-bottom:30px">
+  <button id="staffBtn" style="background:#0b66c3;color:#fff;border-radius:8px;padding:10px 16px;border:0;cursor:pointer;font-weight:600">Только для сотрудников компании</button>
+</div>
+
+<!-- Staff modal -->
+<div id="staffModal" style="display:none;position:fixed;left:0;top:0;width:100%;height:100%;background:rgba(0,0,0,0.45);align-items:center;justify-content:center;z-index:9999">
+  <div style="background:#fff;padding:20px;border-radius:10px;min-width:320px;box-shadow:0 8px 30px rgba(10,20,40,0.12)">
+    <h3 style="margin-top:0;margin-bottom:8px;color:#0b2947">Вход для сотрудников</h3>
+    <p style="color:#6b7a90;margin-top:0">Введите ваш ID сотрудника:</p>
+    <input id="staffIdInput" placeholder="ID сотрудника" style="width:100%;padding:8px;border:1px solid #e6f0ff;border-radius:6px;margin-bottom:10px"/>
+    <div style="text-align:right">
+      <button id="staffCancel" style="margin-right:8px;background:#efefef;color:#0b2947;border-radius:6px;padding:8px 10px;border:0;cursor:pointer">Отмена</button>
+      <button id="staffSubmit" style="background:#0b66c3;color:#fff;border-radius:6px;padding:8px 12px;border:0;cursor:pointer">Войти</button>
+    </div>
+    <p id="staffError" style="color:#b33;margin-top:8px;display:none"></p>
+  </div>
+</div>
+
+<script>
+(function(){
+  const valid = {
+    "0040123":"Владимир",
+    "000123":"Какаду",
+    "012636":"Святослав",
+    "20028":"Тимофей"
+  };
+  const staffBtn = document.getElementById('staffBtn');
+  const modal = document.getElementById('staffModal');
+  const cancel = document.getElementById('staffCancel');
+  const submit = document.getElementById('staffSubmit');
+  const input = document.getElementById('staffIdInput');
+  const err = document.getElementById('staffError');
+
+  staffBtn && staffBtn.addEventListener('click', ()=>{ input.value=''; err.style.display='none'; modal.style.display='flex'; input.focus(); });
+  cancel && cancel.addEventListener('click', ()=>{ modal.style.display='none'; });
+  submit && submit.addEventListener('click', ()=>{
+    const id = (input.value||'').trim();
+    if(!id){ err.textContent='Введите ID'; err.style.display='block'; return; }
+    if(!valid[id]){ err.textContent='Неверный ID'; err.style.display='block'; return; }
+    modal.style.display='none';
+    window.location.href = 'loading.html?uid=' + encodeURIComponent(id);
+  });
+  input && input.addEventListener('keydown', (e)=>{ if(e.key==='Enter') submit.click(); });
+})();
+</script>
+<!-- END STAFF ACCESS BUTTON -->
+</body>
+</html>
